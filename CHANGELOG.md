@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.6 (2025-04-04)
+
+- Merge remote-tracking branch 'origin/main' (bcc4e0c)
+- feat: add raw array output format option in TableParse node (f695b95)
+
 ## v0.1.5 (2025-04-04)
 
 - feat: add list format option for table output in TableParse node (0b050a8)

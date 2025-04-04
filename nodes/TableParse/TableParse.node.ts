@@ -78,6 +78,11 @@ export class TableParse implements INodeType {
 								value: 'singleOutput',
 								description: 'All tables combined in a single output item',
 							},
+							{
+								name: 'List Format',
+								value: 'listFormat',
+								description: 'Convert tables to a list of objects with column headers as keys',
+							},
 						],
 						default: 'separateTables',
 						description: 'How the tables should be structured in the output',
@@ -168,8 +173,35 @@ export class TableParse implements INodeType {
 							json: { tables },
 							pairedItem: { item: itemIndex },
 						});
+					} else if (options.outputFormat === 'listFormat') {
+						// Return tables data as a list of objects with column headers as keys
+						tables.forEach((tableData, tableIndex) => {
+							// For list format, we expect tableData to already be an array of objects
+							// with column headers as keys (created above when useFirstRowAsHeader is true)
+							if (Array.isArray(tableData) && tableData.length > 0) {
+								if (typeof tableData[0] === 'object') {
+									// If the table is already in object format (headers used)
+									tableData.forEach((row) => {
+										returnData.push({
+											json: row,
+											pairedItem: { item: itemIndex },
+										});
+									});
+								} else {
+									// If raw data (headers not used), we can't convert to proper objects
+									returnData.push({
+										json: {
+											error: 'List format requires "Use First Row as Header" to be enabled',
+											tableIndex,
+											rawData: tableData,
+										},
+										pairedItem: { item: itemIndex },
+									});
+								}
+							}
+						});
 					} else {
-						// Return each table as a separate item
+						// Return each table as a separate item (separateTables format)
 						tables.forEach((tableData, tableIndex) => {
 							returnData.push({
 								json: {

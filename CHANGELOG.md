@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.7 (2025-04-04)
+
+- - refactor table (80f4d8e)
+
 ## v0.1.6 (2025-04-04)
 
 - Merge remote-tracking branch 'origin/main' (bcc4e0c)

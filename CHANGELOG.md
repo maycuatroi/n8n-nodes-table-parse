@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.4 (2025-04-04)
+
+- - Fix bug import nodes (2a30162)
+
 ## v0.1.3 (2025-04-04)
 
 - chore: add ESLint configuration files and update package dependencies (dfacea6)

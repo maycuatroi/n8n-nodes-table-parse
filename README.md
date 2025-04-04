@@ -51,3 +51,5 @@ This node is powered by the [tabletojson](https://github.com/maugenst/tabletojso
 ## License
 
 MIT 
+
+## Develop with love by ❤️ [Omelet](https://omelet.tech)

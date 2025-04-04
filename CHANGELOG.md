@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.3 (2025-04-04)
+
+- chore: add ESLint configuration files and update package dependencies (dfacea6)
+
 ## v0.1.2 (2025-04-04)
 
 - docs: update README to include development credit and add newline at end of file (64d19c8)

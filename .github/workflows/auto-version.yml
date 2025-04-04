@@ -1,0 +1,113 @@
+name: Auto Version and Changelog
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "package.json"
+      - "CHANGELOG.md"
+      - "README.md"
+      - ".github/**"
+
+jobs:
+  version-and-changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get commit messages since last release
+        id: get_commits
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"- %s (%h)" -n 10)
+          else
+            COMMITS=$(git log --pretty=format:"- %s (%h)" $LAST_TAG..HEAD)
+          fi
+          echo "COMMITS<<EOF" >> $GITHUB_ENV
+          echo "$COMMITS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Auto version bump
+        id: version_bump
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          IFS='.' read -r -a VERSION_PARTS <<< "$PACKAGE_VERSION"
+
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+
+          # Increment patch version
+          PATCH=$((PATCH + 1))
+
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+
+          # Update package.json version
+          npm version --no-git-tag-version "$NEW_VERSION"
+
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Update CHANGELOG.md
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          TEMP_FILE=$(mktemp)
+
+          # Extract header from existing CHANGELOG.md if it exists
+          if [ -f CHANGELOG.md ]; then
+            head -n 1 CHANGELOG.md > $TEMP_FILE
+            echo "" >> $TEMP_FILE
+          else
+            echo "# Changelog" > $TEMP_FILE
+            echo "" >> $TEMP_FILE
+          fi
+
+          # Add new version header
+          echo "## v${{ env.NEW_VERSION }} ($(date +'%Y-%m-%d'))" >> $TEMP_FILE
+          echo "" >> $TEMP_FILE
+
+          # Add commit messages
+          echo "${{ env.COMMITS }}" >> $TEMP_FILE
+          echo "" >> $TEMP_FILE
+
+          # Append existing changelog content, skipping the header
+          if [ -f CHANGELOG.md ]; then
+            tail -n +2 CHANGELOG.md >> $TEMP_FILE
+          fi
+
+          # Replace CHANGELOG.md with the new content
+          mv $TEMP_FILE CHANGELOG.md
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: bump version to ${{ env.NEW_VERSION }} and update changelog"
+          title: "Bump version to ${{ env.NEW_VERSION }}"
+          body: |
+            This PR automatically bumps the version to ${{ env.NEW_VERSION }} and updates the changelog.
+
+            ### Changes:
+            ${{ env.COMMITS }}
+          branch: auto-version-bump
+          base: main

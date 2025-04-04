@@ -1,0 +1,69 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)",
+        "authentication": "none",
+        "options": {}
+      },
+      "id": "1",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3.1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "parseTables",
+        "htmlSource": "={{ $json.data }}",
+        "options": {}
+      },
+      "id": "2",
+      "name": "HTML Table Parse",
+      "type": "n8n-nodes-table-parse.tableParse",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "3",
+      "name": "JSON to File",
+      "type": "n8n-nodes-base.jsonToFile",
+      "typeVersion": 1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML Table Parse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Table Parse": {
+      "main": [
+        [
+          {
+            "node": "JSON to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+} 

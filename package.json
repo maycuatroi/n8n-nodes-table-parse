@@ -1,0 +1,63 @@
+{
+  "name": "n8n-nodes-table-parse",
+  "version": "0.1.0",
+  "description": "n8n node to parse HTML tables to JSON",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "table",
+    "html",
+    "parse",
+    "json"
+  ],
+  "license": "MIT",
+  "homepage": "https://omelet.tech",
+  "author": {
+    "name": "Nguyen Anh Binh",
+    "email": "socrat.nguyenanhbinh@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maycuatroi/n8n-nodes-table-parse.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "format": "prettier --write .",
+    "lint": "eslint nodes credentials --ext .ts",
+    "lintfix": "eslint nodes credentials --ext .ts --fix",
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "examples",
+    "index.js"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [],
+    "nodes": [
+      "dist/nodes/TableParse/TableParse.node.js"
+    ]
+  },
+  "engines": {
+    "node": ">=16.9.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/node": "^16.11.39",
+    "@types/request-promise-native": "^1.0.17",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint-plugin-n8n-nodes-base": "^1.0.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "n8n-core": "1.14.1",
+    "n8n-workflow": "1.14.1"
+  }
+}

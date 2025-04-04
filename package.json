@@ -40,7 +40,7 @@
     "n8nNodesApiVersion": 1,
     "credentials": [],
     "nodes": [
-      "dist/nodes/TableParse/TableParse.node.js"
+      "dist/TableParse.node.js"
     ]
   },
   "engines": {

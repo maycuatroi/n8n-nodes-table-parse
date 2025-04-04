@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.5 (2025-04-04)
+
+- feat: add list format option for table output in TableParse node (0b050a8)
+
 ## v0.1.4 (2025-04-04)
 
 - - Fix bug import nodes (2a30162)

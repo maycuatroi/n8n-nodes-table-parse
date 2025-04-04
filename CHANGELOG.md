@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.2 (2025-04-04)
+
+- docs: update README to include development credit and add newline at end of file (64d19c8)
+
 ## v0.1.1 (2025-04-04)
 
 - Initial commit: Add n8n-nodes-table-parse package with HTML table parsing functionality, including core files, configuration, and workflows for build, test, and publish. (ee6c844)
